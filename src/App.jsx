@@ -1,6 +1,7 @@
 
 import { useState, useEffect,useRef  } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
+import Quiz from './quiz';
 
 const Fetch = () => {
     const location = useLocation();
@@ -17,44 +18,27 @@ const Fetch = () => {
     }, []);
 
     
-    // useEffect(()=> {
-    //   (async () => {
-    //     const response = await fetch("https://opentdb.com/api.php?amount="+
-    //       Amount+"&category=9&difficulty="+Difficulty+"&type="+Type);
-    //       const data = await response.json();
+    useEffect(()=> {
+      (async () => {
+        const response = await fetch("https://opentdb.com/api.php?amount="+
+          Amount+"&category=9&difficulty="+Difficulty+"&type="+Type);
+          const data = await response.json();
           
-    //       console.log((data.results))
-    //       if(data.response_code==0){
-    //         setData(JSON.parse(JSON.stringify(data.results)));
-    //       }
-    //       setData(data.results)
-    //     })();
-    //   },[data])
+          console.log((data.results))
+          if(data.response_code==0){
+            setData(JSON.parse(JSON.stringify(data.results)));
+          }
+          setData(data.results)
+        })();
+      },[])
    
-    async function fetchData(){
-      const response=await fetch("https://opentdb.com/api.php?amount="+Amount+
-          "&category=9&difficulty="+Difficulty+"&type="+Type);
-      const data=await response.json();
-      setData(data);
-      
-    }
-    console.log(data)
-   
-    fetchData()
     
-    
-    console.log((data.results))
-
-
-
-      
     const navigateTo = useNavigate();
-    const quizStart = () => {
-     
-      if(data.length!==0||data!==undefined){
-          navigateTo('/',{state:
+    const quizStart = (dataj) => {
+      if(dataj.length!==0||dataj!==undefined){
+          navigateTo('/quiz',{state:
             {   
-              JsonData:data.results,
+              JsonData:dataj.length>0?dataj:null,
             }
           }
         );
@@ -62,8 +46,11 @@ const Fetch = () => {
     };
     return (
       <div>
-        { <button type="button" ref={buttonRef} style={{ display: 'none' }} onClick={quizStart}  >
-        </button> }
+        {data?quizStart(data):<p>
+
+          loading
+        </p>
+          }
       </div>
     );
   
